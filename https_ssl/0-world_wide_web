@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Function to query DNS for a subdomain
+get_dns_record() {
+    local DOMAIN=$1
+    local SUB=$2
+    local FULL="${SUB}.${DOMAIN}"
+
+    # Query dig and extract values with awk
+    TYPE=$(dig $FULL | awk '/ANSWER SECTION:/ {getline; print $4}')
+    DEST=$(dig $FULL +short)
+
+    echo "The subdomain $SUB is a $TYPE record and points to $DEST"
+}
+
+DOMAIN=$1
+SUBDOMAIN=$2
+
+# If only the domain is provided, check the default required subdomains
+if [ -z "$SUBDOMAIN" ]; then
+    for sub in www lb-01 web-01 web-02; do
+        get_dns_record "$DOMAIN" "$sub"
+    done
+else
+    get_dns_record "$DOMAIN" "$SUBDOMAIN"
+fi
