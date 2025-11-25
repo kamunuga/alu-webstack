@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# This script audits DNS records for given subdomains
 # Function to query DNS for a subdomain
 get_dns_record() {
     local DOMAIN=$1
